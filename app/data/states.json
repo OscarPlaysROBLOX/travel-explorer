@@ -1,0 +1,628 @@
+[
+ {
+  "name": "Alabama",
+  "abbr": "AL",
+  "capital": "Montgomery",
+  "largest": "Huntsville",
+  "pop": 5024279,
+  "area_mi2": 52420.07,
+  "nickname": "Yellowhammer State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Alaska",
+  "abbr": "AK",
+  "capital": "Juneau",
+  "largest": "Anchorage",
+  "pop": 733391,
+  "area_mi2": 665384.04,
+  "nickname": "The Last Frontier",
+  "timezones": [
+   "Alaska",
+   "Hawaii-Aleutian"
+  ]
+ },
+ {
+  "name": "Arizona",
+  "abbr": "AZ",
+  "capital": "Phoenix",
+  "largest": "Phoenix",
+  "pop": 7151502,
+  "area_mi2": 113990.3,
+  "nickname": "Grand Canyon State",
+  "timezones": [
+   "Mountain (no DST, except Navajo Nation)"
+  ]
+ },
+ {
+  "name": "Arkansas",
+  "abbr": "AR",
+  "capital": "Little Rock",
+  "largest": "Little Rock",
+  "pop": 3011524,
+  "area_mi2": 53178.55,
+  "nickname": "The Natural State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "California",
+  "abbr": "CA",
+  "capital": "Sacramento",
+  "largest": "Los Angeles",
+  "pop": 39538223,
+  "area_mi2": 163694.74,
+  "nickname": "Golden State",
+  "timezones": [
+   "Pacific"
+  ]
+ },
+ {
+  "name": "Colorado",
+  "abbr": "CO",
+  "capital": "Denver",
+  "largest": "Denver",
+  "pop": 5773714,
+  "area_mi2": 104093.67,
+  "nickname": "Centennial State",
+  "timezones": [
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Connecticut",
+  "abbr": "CT",
+  "capital": "Hartford",
+  "largest": "Bridgeport",
+  "pop": 3605944,
+  "area_mi2": 5543.41,
+  "nickname": "Constitution State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Delaware",
+  "abbr": "DE",
+  "capital": "Dover",
+  "largest": "Wilmington",
+  "pop": 989948,
+  "area_mi2": 2488.72,
+  "nickname": "First State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "District of Columbia",
+  "abbr": "DC",
+  "capital": "Washington (federal district)",
+  "largest": "Washington",
+  "pop": 689545,
+  "area_mi2": 68,
+  "nickname": "The District",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Florida",
+  "abbr": "FL",
+  "capital": "Tallahassee",
+  "largest": "Jacksonville",
+  "pop": 21538187,
+  "area_mi2": 65757.7,
+  "nickname": "Sunshine State",
+  "timezones": [
+   "Eastern",
+   "Central"
+  ]
+ },
+ {
+  "name": "Georgia",
+  "abbr": "GA",
+  "capital": "Atlanta",
+  "largest": "Atlanta",
+  "pop": 10711908,
+  "area_mi2": 59425.15,
+  "nickname": "Peach State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Hawaii",
+  "abbr": "HI",
+  "capital": "Honolulu",
+  "largest": "Honolulu",
+  "pop": 1455271,
+  "area_mi2": 10931.72,
+  "nickname": "Aloha State",
+  "timezones": [
+   "Hawaii-Aleutian (no DST)"
+  ]
+ },
+ {
+  "name": "Idaho",
+  "abbr": "ID",
+  "capital": "Boise",
+  "largest": "Boise",
+  "pop": 1839106,
+  "area_mi2": 83568.95,
+  "nickname": "Gem State",
+  "timezones": [
+   "Mountain",
+   "Pacific"
+  ]
+ },
+ {
+  "name": "Illinois",
+  "abbr": "IL",
+  "capital": "Springfield",
+  "largest": "Chicago",
+  "pop": 12812508,
+  "area_mi2": 57913.55,
+  "nickname": "Prairie State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Indiana",
+  "abbr": "IN",
+  "capital": "Indianapolis",
+  "largest": "Indianapolis",
+  "pop": 6785528,
+  "area_mi2": 36419.55,
+  "nickname": "Hoosier State",
+  "timezones": [
+   "Eastern",
+   "Central"
+  ]
+ },
+ {
+  "name": "Iowa",
+  "abbr": "IA",
+  "capital": "Des Moines",
+  "largest": "Des Moines",
+  "pop": 3190369,
+  "area_mi2": 56272.81,
+  "nickname": "Hawkeye State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Kansas",
+  "abbr": "KS",
+  "capital": "Topeka",
+  "largest": "Wichita",
+  "pop": 2937880,
+  "area_mi2": 82278.36,
+  "nickname": "Sunflower State",
+  "timezones": [
+   "Central",
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Kentucky",
+  "abbr": "KY",
+  "capital": "Frankfort",
+  "largest": "Louisville",
+  "pop": 4505836,
+  "area_mi2": 40407.8,
+  "nickname": "Bluegrass State",
+  "timezones": [
+   "Eastern",
+   "Central"
+  ]
+ },
+ {
+  "name": "Louisiana",
+  "abbr": "LA",
+  "capital": "Baton Rouge",
+  "largest": "New Orleans",
+  "pop": 4657757,
+  "area_mi2": 52378.13,
+  "nickname": "Pelican State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Maine",
+  "abbr": "ME",
+  "capital": "Augusta",
+  "largest": "Portland",
+  "pop": 1362359,
+  "area_mi2": 35379.74,
+  "nickname": "Pine Tree State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Maryland",
+  "abbr": "MD",
+  "capital": "Annapolis",
+  "largest": "Baltimore",
+  "pop": 6177224,
+  "area_mi2": 12405.93,
+  "nickname": "Old Line State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Massachusetts",
+  "abbr": "MA",
+  "capital": "Boston",
+  "largest": "Boston",
+  "pop": 7029917,
+  "area_mi2": 10554.39,
+  "nickname": "Bay State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Michigan",
+  "abbr": "MI",
+  "capital": "Lansing",
+  "largest": "Detroit",
+  "pop": 10077331,
+  "area_mi2": 96713.51,
+  "nickname": "Great Lakes State",
+  "timezones": [
+   "Eastern",
+   "Central"
+  ]
+ },
+ {
+  "name": "Minnesota",
+  "abbr": "MN",
+  "capital": "Saint Paul",
+  "largest": "Minneapolis",
+  "pop": 5706494,
+  "area_mi2": 86935.83,
+  "nickname": "North Star State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Mississippi",
+  "abbr": "MS",
+  "capital": "Jackson",
+  "largest": "Jackson",
+  "pop": 2961279,
+  "area_mi2": 48431.78,
+  "nickname": "Magnolia State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Missouri",
+  "abbr": "MO",
+  "capital": "Jefferson City",
+  "largest": "Kansas City",
+  "pop": 6154913,
+  "area_mi2": 69706.99,
+  "nickname": "Show-Me State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Montana",
+  "abbr": "MT",
+  "capital": "Helena",
+  "largest": "Billings",
+  "pop": 1084225,
+  "area_mi2": 147039.71,
+  "nickname": "Treasure State",
+  "timezones": [
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Nebraska",
+  "abbr": "NE",
+  "capital": "Lincoln",
+  "largest": "Omaha",
+  "pop": 1961504,
+  "area_mi2": 77347.81,
+  "nickname": "Cornhusker State",
+  "timezones": [
+   "Central",
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Nevada",
+  "abbr": "NV",
+  "capital": "Carson City",
+  "largest": "Las Vegas",
+  "pop": 3104614,
+  "area_mi2": 110571.82,
+  "nickname": "Silver State",
+  "timezones": [
+   "Pacific",
+   "Mountain"
+  ]
+ },
+ {
+  "name": "New Hampshire",
+  "abbr": "NH",
+  "capital": "Concord",
+  "largest": "Manchester",
+  "pop": 1377529,
+  "area_mi2": 9349.16,
+  "nickname": "Granite State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "New Jersey",
+  "abbr": "NJ",
+  "capital": "Trenton",
+  "largest": "Newark",
+  "pop": 9288994,
+  "area_mi2": 8722.58,
+  "nickname": "Garden State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "New Mexico",
+  "abbr": "NM",
+  "capital": "Santa Fe",
+  "largest": "Albuquerque",
+  "pop": 2117522,
+  "area_mi2": 121590.3,
+  "nickname": "Land of Enchantment",
+  "timezones": [
+   "Mountain"
+  ]
+ },
+ {
+  "name": "New York",
+  "abbr": "NY",
+  "capital": "Albany",
+  "largest": "New York City",
+  "pop": 20201249,
+  "area_mi2": 54554.98,
+  "nickname": "Empire State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "North Carolina",
+  "abbr": "NC",
+  "capital": "Raleigh",
+  "largest": "Charlotte",
+  "pop": 10439388,
+  "area_mi2": 53819.16,
+  "nickname": "Tar Heel State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "North Dakota",
+  "abbr": "ND",
+  "capital": "Bismarck",
+  "largest": "Fargo",
+  "pop": 779094,
+  "area_mi2": 70698.32,
+  "nickname": "Peace Garden State",
+  "timezones": [
+   "Central",
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Ohio",
+  "abbr": "OH",
+  "capital": "Columbus",
+  "largest": "Columbus",
+  "pop": 11799448,
+  "area_mi2": 44825.58,
+  "nickname": "Buckeye State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Oklahoma",
+  "abbr": "OK",
+  "capital": "Oklahoma City",
+  "largest": "Oklahoma City",
+  "pop": 3959353,
+  "area_mi2": 69898.87,
+  "nickname": "Sooner State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Oregon",
+  "abbr": "OR",
+  "capital": "Salem",
+  "largest": "Portland",
+  "pop": 4237256,
+  "area_mi2": 98378.54,
+  "nickname": "Beaver State",
+  "timezones": [
+   "Pacific",
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Pennsylvania",
+  "abbr": "PA",
+  "capital": "Harrisburg",
+  "largest": "Philadelphia",
+  "pop": 13002700,
+  "area_mi2": 46054.34,
+  "nickname": "Keystone State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Rhode Island",
+  "abbr": "RI",
+  "capital": "Providence",
+  "largest": "Providence",
+  "pop": 1097379,
+  "area_mi2": 1544.89,
+  "nickname": "Ocean State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "South Carolina",
+  "abbr": "SC",
+  "capital": "Columbia",
+  "largest": "Charleston",
+  "pop": 5118425,
+  "area_mi2": 32020.49,
+  "nickname": "Palmetto State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "South Dakota",
+  "abbr": "SD",
+  "capital": "Pierre",
+  "largest": "Sioux Falls",
+  "pop": 886667,
+  "area_mi2": 77115.68,
+  "nickname": "Mount Rushmore State",
+  "timezones": [
+   "Central",
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Tennessee",
+  "abbr": "TN",
+  "capital": "Nashville",
+  "largest": "Nashville",
+  "pop": 6910840,
+  "area_mi2": 42144.25,
+  "nickname": "Volunteer State",
+  "timezones": [
+   "Central",
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Texas",
+  "abbr": "TX",
+  "capital": "Austin",
+  "largest": "Houston",
+  "pop": 29145505,
+  "area_mi2": 268596.46,
+  "nickname": "Lone Star State",
+  "timezones": [
+   "Central",
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Utah",
+  "abbr": "UT",
+  "capital": "Salt Lake City",
+  "largest": "Salt Lake City",
+  "pop": 3271616,
+  "area_mi2": 84896.88,
+  "nickname": "Beehive State",
+  "timezones": [
+   "Mountain"
+  ]
+ },
+ {
+  "name": "Vermont",
+  "abbr": "VT",
+  "capital": "Montpelier",
+  "largest": "Burlington",
+  "pop": 643077,
+  "area_mi2": 9616.36,
+  "nickname": "Green Mountain State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Virginia",
+  "abbr": "VA",
+  "capital": "Richmond",
+  "largest": "Virginia Beach",
+  "pop": 8631393,
+  "area_mi2": 42774.93,
+  "nickname": "Old Dominion",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Washington",
+  "abbr": "WA",
+  "capital": "Olympia",
+  "largest": "Seattle",
+  "pop": 7705281,
+  "area_mi2": 71297.95,
+  "nickname": "Evergreen State",
+  "timezones": [
+   "Pacific"
+  ]
+ },
+ {
+  "name": "West Virginia",
+  "abbr": "WV",
+  "capital": "Charleston",
+  "largest": "Charleston",
+  "pop": 1793716,
+  "area_mi2": 24230.04,
+  "nickname": "Mountain State",
+  "timezones": [
+   "Eastern"
+  ]
+ },
+ {
+  "name": "Wisconsin",
+  "abbr": "WI",
+  "capital": "Madison",
+  "largest": "Milwaukee",
+  "pop": 5893718,
+  "area_mi2": 65496.38,
+  "nickname": "Badger State",
+  "timezones": [
+   "Central"
+  ]
+ },
+ {
+  "name": "Wyoming",
+  "abbr": "WY",
+  "capital": "Cheyenne",
+  "largest": "Cheyenne",
+  "pop": 576851,
+  "area_mi2": 97813.01,
+  "nickname": "Equality State",
+  "timezones": [
+   "Mountain"
+  ]
+ }
+]

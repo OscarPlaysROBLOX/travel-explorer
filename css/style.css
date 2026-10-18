@@ -185,3 +185,36 @@ code.inline{background:#f0f4f8; padding:2px 6px; border-radius:4px; font-size:.8
   .split-dl-main{flex:1; justify-content:center; font-size:1.05rem; padding-left:16px; padding-right:14px}
   .split-dl-menu{min-width:100%; right:0}
 }
+
+/* iPhone & iPad (Update 1) */
+.ico-apple{flex-shrink:0; display:block}
+.ios-btn{
+  display:inline-flex; align-items:center; gap:10px; margin-top:14px;
+  padding:10px 16px; border-radius:12px; border:2px solid var(--ink);
+  color:var(--ink); background:#fff; text-decoration:none; font-weight:700; font-size:.98rem; line-height:1.2;
+}
+.ios-btn small{display:block; font-weight:600; font-size:.75rem; color:var(--blue-d)}
+.ios-btn:hover{background:var(--ink); color:#fff}
+.ios-btn:hover small{color:#cfe6ff}
+.ios{padding:16px 0 56px}
+.ios-inner{
+  display:grid; grid-template-columns:1.1fr 1fr; gap:32px; align-items:center;
+  background:linear-gradient(135deg,#1b2a3a,#24456b); color:#fff;
+  border-radius:24px; padding:40px 36px; max-width:1080px;
+}
+.ios .eyebrow{background:rgba(255,255,255,.14); color:#fff}
+.ios h2{color:#fff; margin-bottom:12px}
+.ios .lead{color:#d6e4f2; margin-bottom:22px}
+.ios-cta{
+  display:inline-flex; align-items:center; gap:12px;
+  background:#fff; color:#111; text-decoration:none; font-weight:700; font-size:1.08rem;
+  padding:14px 22px; border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+.ios-cta:hover{background:#eaf4ff}
+.ios-steps{color:var(--ink)}
+.ios-steps h3{margin:0 0 10px; font-size:1.15rem}
+.ios-steps ol{margin:0 0 12px; padding-left:22px}
+.ios-steps li{margin:6px 0}
+.ios-steps .share-ico{display:inline-flex; vertical-align:-3px; color:var(--blue)}
+@media (max-width:900px){ .ios-inner{grid-template-columns:1fr; padding:28px 22px; margin:0 12px} }
+@media (max-width:560px){ .ios-btn{width:100%; justify-content:center} .ios-cta{width:100%; justify-content:center; font-size:1rem} }
