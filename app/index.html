@@ -1,79 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>TravelExplorer</title>
-  <meta name="description" content="TravelExplorer for iPhone and iPad: 250 countries, all 50 US states and DC. Works offline after the first visit.">
-  <meta name="theme-color" content="#1e88e5">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="TravelExplorer">
-  <meta name="format-detection" content="telephone=no">
-  <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
-  <link rel="icon" type="image/png" href="icons/favicon-64.png">
-  <link rel="stylesheet" href="app.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TravelExplorer</title>
+<meta name="description" content="Look up 250 countries, all 50 US states and DC: capital, population, languages, currency, time zones and more. Works offline.">
+<meta name="theme-color" content="#1e88e5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TravelExplorer">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
-  <div class="app" id="app" data-view="list">
-    <header class="bar">
-      <button type="button" class="back" id="back" aria-label="Back to list">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="currentColor" d="M15.4 4.6a1 1 0 0 1 0 1.4L9.4 12l6 6a1 1 0 1 1-1.4 1.4l-6.7-6.7a1 1 0 0 1 0-1.4L14 4.6a1 1 0 0 1 1.4 0z"/></svg>
-        <span>Back</span>
-      </button>
-      <h1 class="bar-title"><img src="icons/favicon-64.png" alt="" width="26" height="26"> TravelExplorer</h1>
-      <button type="button" class="about-btn" id="aboutBtn">About</button>
-    </header>
-
-    <div class="install" id="install" hidden>
-      <div>
-        <strong>Install on your iPhone or iPad:</strong>
-        tap <span class="share-ico" aria-label="Share"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M12 2.6l4.2 4.2-1.4 1.4L13 6.4V15h-2V6.4L9.2 8.2 7.8 6.8 12 2.6zM5 10h3v2H6v8h12v-8h-2v-2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1z"/></svg></span> <b>Share</b>, then <b>Add to Home Screen</b>.
-      </div>
-      <button type="button" class="install-x" id="installX" aria-label="Dismiss">&times;</button>
-    </div>
-
-    <div class="panes">
-      <aside class="side" aria-label="Places">
-        <div class="tabs" role="tablist">
-          <button type="button" role="tab" id="tabC" aria-selected="true">Countries</button>
-          <button type="button" role="tab" id="tabS" aria-selected="false">US States</button>
-        </div>
-        <div class="search-wrap">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M10 3a7 7 0 0 1 5.6 11.2l4.6 4.6-1.4 1.4-4.6-4.6A7 7 0 1 1 10 3zm0 2a5 5 0 1 0 0 10 5 5 0 0 0 0-10z"/></svg>
-          <input type="search" id="q" placeholder="Search..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Search">
-        </div>
-        <p class="count" id="count"></p>
-        <ul class="list" id="list" role="listbox" aria-label="Results"></ul>
-      </aside>
-
-      <main class="detail" id="detail" aria-live="polite">
-        <div class="detail-inner" id="detailInner">
-          <p class="loading">Loading…</p>
-        </div>
-      </main>
-    </div>
+<header class="bar">
+  <div class="brand"><img src="icon.png" alt="" width="30" height="30"> TravelExplorer</div>
+  <div class="bar-actions">
+    <span id="offline" class="pill" hidden>Offline ready ✓</span>
+    <button type="button" id="aboutBtn" class="bar-btn" title="About and data sources">About</button>
   </div>
+</header>
+<div class="layout">
+  <aside class="side">
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tabCountries" class="tab active" aria-selected="true">Countries</button>
+      <button type="button" role="tab" id="tabStates" class="tab" aria-selected="false">US States</button>
+      <button type="button" role="tab" id="tabFavs" class="tab tab-fav" aria-selected="false" aria-label="Favorites" title="Favorites">★</button>
+    </div>
+    <div class="filters">
+      <input type="search" id="search" placeholder="Search…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" aria-label="Search">
+      <select id="region" aria-label="Filter by region">
+        <option value="">All regions</option>
+      </select>
+    </div>
+    <ul id="list" class="list" role="listbox" tabindex="0" aria-label="Places"></ul>
+    <div id="count" class="count"></div>
+  </aside>
+  <main class="detail" id="detail" tabindex="-1"></main>
+</div>
 
-  <dialog class="about" id="about">
-    <h2>About TravelExplorer</h2>
-    <p><b>Update 1</b>: TravelExplorer for iPhone &amp; iPad. Made for Galaxy.</p>
-    <p id="aboutCounts"></p>
-    <p>Countries from the REST Countries dataset (v3.1 data file, gitlab.com/restcountries/restcountries), downloaded Oct 2026. Population figures are as listed in that dataset. Flags: flagcdn.com images, bundled with the app.</p>
-    <p>US States: capital, largest city, population (2020 U.S. Census) and total area (U.S. Census Bureau) from Wikipedia's "List of states and territories of the United States" (Oct 2026). Nicknames and time zones are commonly cited values.</p>
-    <p>After the first visit, all data is saved on your device so the app works offline. The only thing that goes online is the "Open in map" button, which opens Apple Maps.</p>
-    <h3>Install on iPhone or iPad</h3>
-    <ol>
-      <li>Open this page in <b>Safari</b>.</li>
-      <li>Tap the <b>Share</b> button (square with an arrow).</li>
-      <li>Tap <b>Add to Home Screen</b>, then <b>Add</b>.</li>
-    </ol>
-    <p class="muted">No account, no ads, no tracking.</p>
-    <form method="dialog"><button class="ok">OK</button></form>
-  </dialog>
-
-  <script src="app.js" defer></script>
+<dialog id="about">
+  <h2><img src="icon.png" alt="" width="28" height="28"> TravelExplorer <span id="ver" class="muted"></span></h2>
+  <p>Made by Galaxy. Look up countries and US states. After the first visit everything is stored on this device, so it works offline. Only the “Open in map” button goes online.</p>
+  <p class="muted">On iPad or iPhone: tap the Share button in Safari, then “Add to Home Screen” to get an app icon.</p>
+  <h3>Data sources</h3>
+  <ul id="sources"></ul>
+  <p class="muted">Facts change over time (populations especially). Double-check important details before your trip.</p>
+  <p class="muted">Favorites are saved only on this device (in Safari's website storage). No account, no ads, no tracking.</p>
+  <form method="dialog"><button class="btn">Close</button></form>
+</dialog>
+<script src="app.js"></script>
 </body>
 </html>

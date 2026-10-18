@@ -1,200 +1,250 @@
-(() => {
+(function () {
   'use strict';
-  const $ = (id) => document.getElementById(id);
-  const app = $('app'), listEl = $('list'), q = $('q'), detail = $('detailInner'), countEl = $('count');
-  const tabC = $('tabC'), tabS = $('tabS');
-  const split = window.matchMedia('(min-width: 768px)');
+  var $ = function (id) { return document.getElementById(id); };
+  var state = { tab: 'countries', q: '', region: '', sel: null, items: [], favs: [] };
+  var DATA = null, byId = {}, byCca3 = {};
+  var VERSION = '1.0.0';
+  var touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 
-  let countries = [], states = [];
-  let showStates = false, selKey = null, pushed = false;
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function fold(s) { return String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase(); }
+  function num(n) { return n == null ? '—' : Number(n).toLocaleString('en-US'); }
+  function area(km2, mi2) {
+    if (km2 == null && mi2 == null) return '—';
+    if (mi2 == null) mi2 = km2 * 0.386102; if (km2 == null) km2 = mi2 * 2.589988;
+    var d = km2 < 10 ? 2 : 0;
+    return num(Number(km2.toFixed(d))) + ' km²&nbsp; (' + num(Number(mi2.toFixed(mi2 < 10 ? 2 : 0))) + ' mi²)';
+  }
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : '—'; }
+  function list(a) { return a && a.length ? a.map(esc).join(', ') : '—'; }
 
-  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const N = (n) => Math.round(n).toLocaleString('en-US');
-  const J = (l) => (!l || l.length === 0 ? '' : l.join(', '));
-  const has = (s, t) => s != null && s.toLowerCase().includes(t);
-  const keyOf = (o) => (o.cca2 ? 'c/' + o.cca2 : 's/' + o.abbr);
+  $('aboutBtn').addEventListener('click', function () { $('about').showModal(); });
 
-  function filtered() {
-    const t = q.value.trim().toLowerCase();
-    if (showStates) return states.filter((s) => t === '' || has(s.name, t) || s.abbr.toLowerCase() === t);
-    return countries.filter((c) => t === '' || has(c.name, t) || has(c.official, t) || (c.capital && c.capital.some((x) => has(x, t))));
+  // ---- favorites (stored on this device) ----
+  function loadFavs() {
+    try { var f = JSON.parse(localStorage.getItem('te.favs') || '[]'); return Array.isArray(f) ? f : []; } catch (e) { return []; }
+  }
+  function saveFavs() {
+    try { localStorage.setItem('te.favs', JSON.stringify(state.favs)); } catch (e) {}
+  }
+  function isFav(id) { return state.favs.indexOf(id) >= 0; }
+  function toggleFav(id) {
+    var i = state.favs.indexOf(id);
+    if (i >= 0) state.favs.splice(i, 1); else state.favs.push(id);
+    saveFavs(); renderList(); show(id, true);
   }
 
-  function setTabs() {
-    tabC.setAttribute('aria-selected', String(!showStates));
-    tabS.setAttribute('aria-selected', String(showStates));
+  // ---- list ----
+  function matches(it, q) {
+    if (!q) return true;
+    return it._s.indexOf(q) >= 0;
   }
-
+  function currentItems() {
+    var src;
+    if (state.tab === 'countries') src = DATA.countries;
+    else if (state.tab === 'states') src = DATA.states;
+    else src = state.favs.map(function (id) { return byId[id]; }).filter(Boolean).sort(function (a, b) { return a._name.localeCompare(b._name); });
+    var q = fold(state.q.trim());
+    return src.filter(function (it) {
+      return matches(it, q) && (!state.region || state.tab !== 'countries' || it.region === state.region);
+    });
+  }
   function renderList() {
-    setTabs();
-    const items = filtered();
-    countEl.textContent = items.length + (items.length === 1 ? ' place' : ' places');
-    if (items.length === 0) {
-      listEl.innerHTML = '<li class="empty">No matches</li>';
-      if (split.matches) renderEmpty();
-      return items;
+    var items = state.items = currentItems();
+    var ul = $('list'), html = [];
+    items.forEach(function (it) {
+      html.push('<li role="option" data-id="' + it._id + '"' + (it._id === state.sel ? ' class="sel" aria-selected="true"' : '') + '>' +
+        '<img loading="lazy" src="' + esc(it.flag) + '" alt="">' +
+        '<span class="nm">' + esc(it._name) + (it._kind === 's' && state.tab === 'favs' ? ' <span class="muted">(US)</span>' : '') + '</span>' +
+        (isFav(it._id) ? '<span class="st" title="Favorite">★</span>' : '') + '</li>');
+    });
+    if (!items.length) {
+      html.push('<li class="empty">' + (state.tab === 'favs' && !state.favs.length
+        ? 'No favorites yet. Open a country or state and click “☆ Add to favorites”.'
+        : 'Nothing matches “' + esc(state.q) + '”.') + '</li>');
     }
-    listEl.innerHTML = items.map((o) => {
-      const k = keyOf(o);
-      const icon = o.cca2
-        ? `<img class="thumb" src="flags/${o.cca2.toLowerCase()}.png" alt="" loading="lazy" decoding="async">`
-        : `<span class="abbr">${esc(o.abbr)}</span>`;
-      const sub = o.cca2 ? J(o.capital) : o.capital;
-      return `<li class="${k === selKey ? 'sel' : ''}" data-k="${esc(k)}"><button type="button">${icon}<span class="nm">${esc(o.name)}</span><span class="sub">${esc(sub || '')}</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M8.6 4.6a1 1 0 0 1 1.4 0l6.7 6.7a1 1 0 0 1 0 1.4L10 19.4A1 1 0 1 1 8.6 18l6-6-6-6a1 1 0 0 1 0-1.4z"/></svg></button></li>`;
-    }).join('');
-    return items;
+    ul.innerHTML = html.join('');
+    var total = state.tab === 'countries' ? DATA.countries.length : state.tab === 'states' ? DATA.states.length : state.favs.length;
+    $('count').textContent = items.length === total ? (state.tab === 'states' ? '50 states + DC' : state.tab === 'favs' ? total + ' favorites' : total + ' countries and territories')
+      : items.length + ' of ' + total;
+    var s = ul.querySelector('.sel'); if (s) s.scrollIntoView({ block: 'nearest' });
   }
-
-  function find(k) {
-    if (!k) return null;
-    const [t, code] = k.split('/');
-    if (t === 'c') return countries.find((c) => c.cca2 === code) || null;
-    if (t === 's') return states.find((s) => s.abbr === code) || null;
-    return null;
+  $('list').addEventListener('click', function (e) {
+    var li = e.target.closest('li[data-id]'); if (li) show(li.getAttribute('data-id'), false, true);
+  });
+  function move(delta) {
+    var items = state.items; if (!items.length) return;
+    var i = -1;
+    for (var k = 0; k < items.length; k++) if (items[k]._id === state.sel) { i = k; break; }
+    i = Math.max(0, Math.min(items.length - 1, i + delta));
+    show(items[i]._id);
   }
-
-  const row = (k, v) => `<div><dt>${esc(k)}</dt><dd>${esc(v == null || String(v).trim() === '' ? '—' : v)}</dd></div>`;
-  const cap = (s) => (!s ? '' : s[0].toUpperCase() + s.slice(1));
-
-  function renderEmpty() {
-    detail.innerHTML = '<div class="head"><div><h2 class="title">No matches</h2></div></div>';
+  function keynav(e) {
+    if (e.key === 'ArrowDown') { e.preventDefault(); move(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+    else if (e.key === 'PageDown') { e.preventDefault(); move(15); }
+    else if (e.key === 'PageUp') { e.preventDefault(); move(-15); }
+    else if (e.key === 'Enter' && state.items.length && e.target === $('search')) { e.preventDefault(); if (!state.items.some(function (x) { return x._id === state.sel; })) show(state.items[0]._id); }
   }
+  $('list').addEventListener('keydown', keynav);
+  $('search').addEventListener('keydown', keynav);
+  $('search').addEventListener('input', function () {
+    state.q = this.value; renderList();
+    if (state.items.length && !state.items.some(function (x) { return x._id === state.sel; })) show(state.items[0]._id, true);
+  });
+  $('region').addEventListener('change', function () { state.region = this.value; renderList(); });
 
-  function renderDetail(o) {
-    let html, mapQuery;
-    if (o.cca2) {
-      html = `<div class="head"><img class="flag" src="flags/${o.cca2.toLowerCase()}.png" alt="Flag of ${esc(o.name)}" width="160"><div><h2 class="title">${esc(o.name)}</h2><p class="subtitle">${esc(o.official)}</p></div></div><dl class="facts">` +
-        row('Capital', J(o.capital)) +
-        row('Region', o.region + (o.subregion ? ' / ' + o.subregion : '')) +
-        row('Population', N(o.population)) +
-        row('Area', o.area > 0 ? N(o.area) + ' km²  (' + N(o.area * 0.386102) + ' mi²)' : '') +
-        row('Languages', J(o.languages)) +
-        row('Currencies', J(o.currencies)) +
-        row('Time zones', J(o.timezones)) +
-        row('Drives on the', cap(o.drive)) +
-        row('Calling code', o.calling) + '</dl>';
-      mapQuery = o.name;
-    } else {
-      html = `<div class="head"><div><h2 class="title">${esc(o.name)}&nbsp; (${esc(o.abbr)})</h2><p class="subtitle">"${esc(o.nickname)}"</p></div></div><dl class="facts">` +
-        row('Abbreviation', o.abbr) +
-        row('Capital', o.capital) +
-        row('Largest city', o.largest) +
-        row('Population (2020)', N(o.pop)) +
-        row('Area', N(o.area_mi2) + ' mi²  (' + N(o.area_mi2 * 2.58999) + ' km²)') +
-        row('Nickname', o.nickname) +
-        row('Time zone(s)', o.timezones.join(', ')) + '</dl>';
-      mapQuery = o.abbr === 'DC' ? 'Washington, DC' : o.name + ', USA';
+  function setTab(tab) {
+    state.tab = tab;
+    [['countries', 'tabCountries'], ['states', 'tabStates'], ['favs', 'tabFavs']].forEach(function (p) {
+      var on = p[0] === tab; $(p[1]).classList.toggle('active', on); $(p[1]).setAttribute('aria-selected', on);
+    });
+    $('region').style.display = tab === 'countries' ? '' : 'none';
+    renderList();
+    var items = state.items;
+    if (items.length && !items.some(function (x) { return x._id === state.sel; })) show(items[0]._id, true);
+    if (!touch) $('search').focus();
+  }
+  $('tabCountries').addEventListener('click', function () { setTab('countries'); });
+  $('tabStates').addEventListener('click', function () { setTab('states'); });
+  $('tabFavs').addEventListener('click', function () { setTab('favs'); });
+
+  // ---- detail ----
+  function row(label, value) { return '<dt>' + esc(label) + '</dt><dd>' + value + '</dd>'; }
+  function mapUrl(it) {
+    var q = it._kind === 'c' ? it.name : (it.abbr === 'DC' ? 'Washington, District of Columbia, United States' : it.name + ', United States');
+    return 'https://www.openstreetmap.org/search?query=' + encodeURIComponent(q);
+  }
+  function countryFacts(c) {
+    var cur = c.currencies.length ? c.currencies.map(function (x) {
+      return esc(x.name) + (x.symbol ? ' (' + esc(x.symbol) + ')' : '') + ' <span class="muted">' + esc(x.code) + '</span>';
+    }).join('<br>') : '—';
+    var borders = c.borders.length ? c.borders.map(function (b) {
+      var n = byCca3[b]; return n ? '<button class="link" data-go="' + n._id + '">' + esc(n.name) + '</button>' : esc(b);
+    }).join(', ') : (c.landlocked ? '—' : 'None (no land borders)');
+    var status = c.unMember ? 'Independent, UN member' : c.independent ? 'Independent (not a UN member)' : 'Territory / dependency';
+    return row('Capital', list(c.capital)) +
+      row('Region', esc(c.region) + (c.subregion ? ' / ' + esc(c.subregion) : '')) +
+      row('Population', num(c.population)) +
+      row('Area', area(c.area, null)) +
+      row('Languages', list(c.languages)) +
+      row('Currencies', cur) +
+      row('Time zones', c.timezones.map(function (t) { return '<span class="tz">' + esc(t) + '</span>'; }).join('') || '—') +
+      row('Drives on the', cap(c.drive)) +
+      row('Calling code', list(c.calling)) +
+      row('Internet domain', list(c.tld)) +
+      row('People are called', esc(c.demonym || '—')) +
+      row('Week starts on', cap(c.startOfWeek)) +
+      row('Borders', borders) +
+      row('Status', status) +
+      row('Country codes', esc(c.cca2) + ' / ' + esc(c.cca3));
+  }
+  function stateFacts(s) {
+    var yr = parseInt(String(s.admitted).slice(-4), 10);
+    var admLabel = s.federal_district ? 'Established' : yr <= 1790 ? 'Ratified Constitution' : 'Became a state';
+    return row('Abbreviation', esc(s.abbr)) +
+      row('Capital', esc(s.capital)) +
+      row('Largest city', esc(s.largest)) +
+      row('Population', num(s.pop) + ' <span class="muted">(2020 U.S. Census)</span>') +
+      row('Area', area(s.area_km2, s.area_mi2)) +
+      row('Time zones', s.timezones.map(function (t) { return '<span class="tz">' + esc(t) + '</span>'; }).join('<br>')) +
+      row('Nickname', esc(s.nickname)) +
+      row(admLabel, esc(s.admitted) + (!s.federal_district && yr <= 1790 ? ' <span class="muted">(one of the original 13)</span>' : '')) +
+      row('Country', 'United States') +
+      row('Drives on the', 'Right') +
+      row('Currency', 'United States dollar ($) <span class="muted">USD</span>') +
+      row('Calling code', '+1');
+  }
+  function show(id, keepFocus, fromTap) {
+    var it = byId[id]; if (!it) return;
+    state.sel = id;
+    try { localStorage.setItem('te.sel', id); } catch (e) {}
+    var lis = $('list').querySelectorAll('li[data-id]');
+    for (var i = 0; i < lis.length; i++) {
+      var on = lis[i].getAttribute('data-id') === id;
+      lis[i].classList.toggle('sel', on);
+      if (on) { lis[i].setAttribute('aria-selected', 'true'); lis[i].scrollIntoView({ block: 'nearest' }); } else lis[i].removeAttribute('aria-selected');
     }
-    const url = 'https://maps.apple.com/?q=' + encodeURIComponent(mapQuery);
-    html += `<a class="map" id="mapBtn" href="${esc(url)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 1 7 7c0 5.2-7 13-7 13S5 14.2 5 9a7 7 0 0 1 7-7zm0 4.5A2.5 2.5 0 1 0 12 11.5 2.5 2.5 0 0 0 12 6.5z"/></svg>Open in map</a>`;
-    detail.innerHTML = html;
-    detail.parentElement.scrollTop = 0;
-    document.title = o.name + ' · TravelExplorer';
+    var fav = isFav(id);
+    var sub = it._kind === 'c' ? it.official : (it.federal_district ? 'Federal district of the United States' : 'State of the United States · ' + it.nickname);
+    $('detail').innerHTML =
+      '<div class="hero"><img class="flag" src="' + esc(it.flag) + '" alt="Flag of ' + esc(it._name) + '">' +
+      '<div><h1>' + esc(it._name) + '</h1><p class="official">' + esc(sub) + '</p>' +
+      '<div class="actions"><a class="btn primary" target="_blank" rel="noopener noreferrer" href="' + esc(mapUrl(it)) + '" title="Opens OpenStreetMap in your web browser (needs internet)">🗺️ Open in map</a>' +
+      '<button type="button" class="btn' + (fav ? ' on' : '') + '" id="favBtn">' + (fav ? '★ Favorite' : '☆ Add to favorites') + '</button>' +
+      '<button type="button" class="btn" id="copyBtn" title="Copy these facts as text">Copy facts</button></div></div></div>' +
+      '<section class="facts"><dl>' + (it._kind === 'c' ? countryFacts(it) : stateFacts(it)) + '</dl></section>' +
+      '<p class="muted note">' + (it._kind === 'c' ? 'Population figures are recent estimates from REST Countries.' : 'Population is the official April 1, 2020 U.S. Census count.') + ' The map button is the only feature that needs internet.</p>';
+    $('favBtn').addEventListener('click', function () { toggleFav(id); });
+    $('copyBtn').addEventListener('click', function () {
+      var txt = it._name + '\n' + Array.prototype.map.call($('detail').querySelectorAll('dt'), function (dt) {
+        return dt.textContent + ': ' + dt.nextElementSibling.textContent.replace(/\s+/g, ' ').trim();
+      }).join('\n');
+      var b = this;
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(function () { b.textContent = 'Copied ✓'; }, function () {
+        var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); b.textContent = 'Copied ✓'; } catch (e) {} ta.remove();
+      });
+    });
+    Array.prototype.forEach.call($('detail').querySelectorAll('[data-go]'), function (b) {
+      b.addEventListener('click', function () {
+        var target = b.getAttribute('data-go');
+        if (state.tab !== 'countries') setTab('countries');
+        state.q = ''; $('search').value = ''; state.region = ''; $('region').value = '';
+        renderList(); show(target);
+      });
+    });
+    if (!keepFocus) $('detail').scrollTop = 0;
+    if (!keepFocus && fromTap && window.matchMedia('(orientation: portrait)').matches) $('detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  function markSel() {
-    for (const li of listEl.children) li.classList.toggle('sel', li.dataset.k === selKey);
-  }
-
-  function select(k, { fromUser = false } = {}) {
-    const o = find(k);
-    if (!o) return;
-    selKey = k;
-    renderDetail(o);
-    markSel();
-    if (fromUser) {
-      if (!split.matches) {
-        history.pushState({ k }, '', '#' + k);
-        pushed = true;
-        app.dataset.view = 'detail';
-      } else {
-        history.replaceState({ k }, '', '#' + k);
-      }
-    }
-  }
-
-  function refill() {
-    const items = renderList();
-    // Like the Windows app: in split view, always show something on the right.
-    if (split.matches && items.length && !items.some((o) => keyOf(o) === selKey)) select(keyOf(items[0]));
-    else markSel();
-  }
-
-  function goList() {
-    app.dataset.view = 'list';
-    document.title = 'TravelExplorer';
-    const li = listEl.querySelector('.sel');
-    if (li) li.scrollIntoView({ block: 'nearest' });
-  }
-
-  // Events
-  tabC.addEventListener('click', () => { if (showStates) { showStates = false; listEl.scrollTop = 0; refill(); } });
-  tabS.addEventListener('click', () => { if (!showStates) { showStates = true; listEl.scrollTop = 0; refill(); } });
-  q.addEventListener('input', refill);
-  q.addEventListener('keydown', (e) => { if (e.key === 'Enter') q.blur(); });
-  listEl.addEventListener('click', (e) => {
-    const li = e.target.closest('li[data-k]');
-    if (li) select(li.dataset.k, { fromUser: true });
-  });
-  $('back').addEventListener('click', () => {
-    if (pushed) history.back();
-    else { history.replaceState(null, '', location.pathname); goList(); }
-  });
-  window.addEventListener('popstate', () => {
-    const k = location.hash.slice(1);
-    if (k && find(k)) {
-      showStates = k.startsWith('s/');
-      select(k);
-      if (!split.matches) app.dataset.view = 'detail';
-    } else {
-      pushed = false;
-      goList();
-    }
-  });
-  split.addEventListener('change', () => {
-    if (split.matches) { app.dataset.view = 'list'; refill(); }
-  });
-
-  // About
-  const about = $('about');
-  $('aboutBtn').addEventListener('click', () => {
-    $('aboutCounts').textContent = `Countries: ${countries.length} · US States: ${states.length} (50 states + DC).`;
-    if (about.showModal) about.showModal(); else alert(about.innerText);
-  });
-
-  // "Add to Home Screen" hint for iPhone / iPad Safari that isn't installed yet
-  const ua = navigator.userAgent;
-  const isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  const standalone = navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
-  let dismissed = false;
-  try { dismissed = localStorage.getItem('te-install-dismissed') === '1'; } catch (e) {}
-  if ((isIOS && !standalone && !dismissed) || /[?&]install-hint/.test(location.search)) $('install').hidden = false;
-  $('installX').addEventListener('click', () => {
-    $('install').hidden = true;
-    try { localStorage.setItem('te-install-dismissed', '1'); } catch (e) {}
-  });
-
-  // Offline support
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
-  }
-
-  // Load data (same files as the Windows app)
+  // ---- boot ----
   Promise.all([
-    fetch('data/countries.json').then((r) => r.json()),
-    fetch('data/states.json').then((r) => r.json()),
-  ]).then(([c, s]) => {
-    countries = c; states = s;
-    const k = location.hash.slice(1);
-    if (k && find(k)) {
-      showStates = k.startsWith('s/');
-      renderList();
-      select(k);
-      if (!split.matches) app.dataset.view = 'detail';
-    } else {
-      refill();
-    }
-  }).catch(() => {
-    detail.innerHTML = '<p class="loading">Couldn\'t load the data. Connect to the internet once and reopen the app.</p>';
+    fetch('data.json').then(function (r) { return r.json(); }),
+  ]).then(function (res) {
+    DATA = res[0]; state.favs = loadFavs();
+    $('ver').textContent = 'v' + VERSION;
+    DATA.countries.forEach(function (c) {
+      c._kind = 'c'; c._id = 'c:' + c.cca3; c._name = c.name; byCca3[c.cca3] = c;
+      c._s = fold([c.name, c.official, c.cca2, c.cca3].concat(c.capital).join(' | '));
+      byId[c._id] = c;
+    });
+    DATA.states.forEach(function (s) {
+      s._kind = 's'; s._id = 's:' + s.abbr; s._name = s.name;
+      s._s = fold([s.name, s.abbr, s.capital, s.largest, s.nickname].join(' | '));
+      byId[s._id] = s;
+    });
+    var regions = {}; DATA.countries.forEach(function (c) { if (c.region) regions[c.region] = 1; });
+    Object.keys(regions).sort().forEach(function (r) { var o = document.createElement('option'); o.value = r; o.textContent = r; $('region').appendChild(o); });
+    var m = DATA.meta || {};
+    $('sources').innerHTML = '<li><b>Countries:</b> ' + esc(m.countrySource) + '</li><li><b>US states:</b> ' + esc(m.stateSource) + '</li><li><b>Flags:</b> ' + esc(m.flagSource) + '</li>' +
+      (m.built ? '<li><b>Data built:</b> ' + esc(m.built) + '</li>' : '');
+    var last = null; try { last = localStorage.getItem('te.sel'); } catch (e) {}
+    var h = decodeURIComponent(location.hash.slice(1));
+    var start = byId[h] ? h : byId[last] ? last : 'c:' + DATA.countries[0].cca3;
+    setTab(start.charAt(0) === 's' ? 'states' : 'countries');
+    show(start);
+    window.addEventListener('hashchange', function () {
+      var id = decodeURIComponent(location.hash.slice(1));
+      if (!byId[id]) return;
+      var tab = id.charAt(0) === 's' ? 'states' : 'countries';
+      if (state.tab !== tab && state.tab !== 'favs') setTab(tab);
+      renderList(); show(id);
+    });
+  }).catch(function (e) {
+    $('detail').innerHTML = '<p class="placeholder">Could not load the built-in data: ' + esc(e) + '</p>';
   });
+
+  // ---- offline support ----
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    navigator.serviceWorker.register('sw.js').then(function () { return navigator.serviceWorker.ready; }).then(function () {
+      return caches.match('data.json');
+    }).then(function (ok) {
+      if (ok) { $('offline').hidden = false; setTimeout(function () { $('offline').hidden = true; }, 4000); }
+    }).catch(function () {});
+  }
 })();
