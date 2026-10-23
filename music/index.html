@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Spotify Copycat">
+<meta name="theme-color" content="#121212">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="app.css">
+<title>Spotify Copycat</title>
+</head><body>
+<div id="app">
+<header id="top">
+  <div class="brand"><img src="icons/icon-192.png" alt=""><span>Tunewave</span></div>
+  <div class="hbtns">
+    <button id="upBtn" class="pill" aria-label="Upload your videos or audio">⬆️ Upload</button>
+    <button id="kidsBtn" class="round" aria-label="Turn on Kids mode" title="Kids mode">🧒</button>
+    <button id="glassBtn" class="round" aria-pressed="false" aria-label="Glasses mode (bigger text)" title="Glasses mode">👓</button>
+    <button id="smartBtn" class="round" aria-pressed="false" aria-label="Smart Glasses mode (audio-first, giant controls)" title="Smart Glasses mode">🥽</button>
+    <button id="sunBtn" class="round" aria-pressed="false" aria-label="Ray-Ban mode (bright for sunglasses)" title="Ray-Ban mode">🕶️</button>
+  </div>
+  <input id="fileIn" type="file" accept="video/*,audio/*" multiple hidden>
+</header>
+<main id="view"></main>
+<div id="bar" hidden>
+  <div class="barinfo" id="barOpen"><img id="barArt" alt=""><div><b id="barTitle"></b><small id="barArtist"></small></div></div>
+  <div class="barctl">
+    <button id="barLike" class="icon" aria-label="Like">♡</button>
+    <button id="barPrev" class="icon" aria-label="Previous">⏮</button>
+    <button id="barPlay" class="icon big" aria-label="Play">▶</button>
+    <button id="barNext" class="icon" aria-label="Next">⏭</button>
+  </div>
+  <div class="barprog"><div id="barFill"></div></div>
+</div>
+<nav id="nav">
+  <button data-go="home" class="on"><span>🏠</span>Home</button>
+  <button data-go="search"><span>🔍</span>Search</button>
+  <button data-go="library"><span>📚</span>Your Library</button>
+  <button data-go="settings"><span>⚙️</span>Settings</button>
+</nav>
+</div>
+<section id="np" hidden aria-label="Now playing">
+  <div class="nptop"><button id="npClose" class="icon" aria-label="Close">⌄</button><span id="npFrom">Now Playing</span><button id="npLike" class="icon" aria-label="Like">♡</button></div>
+  <img id="npArt" alt="">
+  <div class="npmeta"><h2 id="npTitle"></h2><p id="npArtist"></p></div>
+  <input id="seek" type="range" min="0" max="1000" value="0" aria-label="Seek">
+  <div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+  <div class="npctl">
+    <button id="shufBtn" class="icon" aria-label="Shuffle">🔀</button>
+    <button id="npPrev" class="icon" aria-label="Previous">⏮</button>
+    <button id="npPlay" class="icon huge" aria-label="Play">▶</button>
+    <button id="npNext" class="icon" aria-label="Next">⏭</button>
+    <button id="repBtn" class="icon" aria-label="Repeat">🔁</button>
+  </div>
+  <div class="rbhint">🥽 Smart Glasses mode: tap your glasses to play/pause, swipe to skip.</div>
+</section>
+<section id="vid" hidden>
+  <div class="nptop"><button id="vidClose" class="icon" aria-label="Close">✕</button><span id="vidTitle"></span><span></span></div>
+  <video id="video" controls playsinline></video>
+</section>
+<section id="rules" hidden role="dialog" aria-label="Community Rules"><div class="rbox">
+<h1>📜 Community Rules</h1>
+<div class="rule"><span>🤐</span><b>1. No swear words.</b></div>
+<div class="rule"><span>🕊️</span><b>2. No violence.</b></div>
+<div class="rule"><span>🧒✅</span><b>3. Everything must be kid-approved.</b></div>
+<p class="rnote">⚠️ Breaking any rule or posting anything inappropriate means your account gets banned. Bans are free — there's never a fee.</p>
+<button class="btn y" id="rulesOk">✅ I agree</button></div></section>
+<div id="toast" role="status"></div>
+<audio id="audio" preload="metadata"></audio>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body></html>
